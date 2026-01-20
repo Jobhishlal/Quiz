@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import { adminService } from '../services/adminService';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -30,7 +31,11 @@ const LoginPage: React.FC = () => {
         try {
             const response = await adminService.login({ email, password });
             if (response.success && response.accessToken) {
-                dispatch(setCredentials({ accessToken: response.accessToken }));
+                const decoded: any = jwtDecode(response.accessToken);
+                dispatch(setCredentials({
+                    accessToken: response.accessToken,
+                    user: { email: decoded.email || '' }
+                }));
                 toast.success(response.message);
                 navigate('/admin/dashboard');
             } else {
