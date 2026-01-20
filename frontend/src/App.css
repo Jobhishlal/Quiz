@@ -1,0 +1,10 @@
+/* CSS Reset/Overrides if needed, but mostly using Tailwind now */
+.app-container {
+  @apply min-h-screen bg-slate-900 text-white flex items-center justify-center p-4;
+}
+
+/* Re-using previous style structure but utilizing Tailwind @apply for clean migration if desired, 
+   OR keeping the previous App.css for the Profile page specifically and Tailwind for Login. 
+   To support both, I will leave this file largely compatible or clean it up. 
+   Given I overwrote index.css with Tailwind directives, standard CSS here works fine too.
+*/
