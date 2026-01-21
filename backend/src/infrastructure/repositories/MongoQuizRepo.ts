@@ -10,15 +10,35 @@ export class MongoQuizRepo implements IQuizRepository {
             questions: quiz.questions,
             duration: quiz.duration,
             group: quiz.group,
-            image: quiz.image
+            image: quiz.image,
+            status: quiz.status
         });
         const savedQuiz = await newQuiz.save();
         return this.mapToEntity(savedQuiz);
     }
 
-    async findAll(): Promise<Quiz[]> {
-        const docs = await QuizModel.find().lean();
-        return docs.map(doc => this.mapToEntity(doc));
+    async getAll(search?: string, filter?: string, page: number = 1, limit: number = 10): Promise<{ quizzes: Quiz[], total: number }> {
+        const query: any = {};
+        if (search) {
+            query.title = { $regex: search, $options: 'i' };
+        }
+        if (filter === 'active') {
+            query.$or = [{ status: 'active' }, { status: { $exists: false } }];
+        } else if (filter && filter !== 'all') {
+            query.status = filter.toLowerCase();
+        }
+
+        const skip = (page - 1) * limit;
+
+        const [docs, total] = await Promise.all([
+            QuizModel.find(query).sort({ _id: -1 }).skip(skip).limit(limit).lean(),
+            QuizModel.countDocuments(query)
+        ]);
+
+        return {
+            quizzes: docs.map(doc => this.mapToEntity(doc)),
+            total
+        };
     }
 
     async findById(id: string): Promise<Quiz | null> {
@@ -28,7 +48,20 @@ export class MongoQuizRepo implements IQuizRepository {
     }
 
     async update(id: string, quiz: Partial<Quiz>): Promise<Quiz | null> {
-        const doc = await QuizModel.findByIdAndUpdate(id, quiz, { new: true }).lean();
+        const updateData: any = {
+            title: quiz.title,
+            description: quiz.description,
+            questions: quiz.questions,
+            duration: quiz.duration,
+            group: quiz.group,
+            image: quiz.image,
+            status: quiz.status
+        };
+
+        // Remove undefined fields
+        Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
+        const doc = await QuizModel.findByIdAndUpdate(id, updateData, { new: true }).lean();
         if (!doc) return null;
         return this.mapToEntity(doc);
     }
@@ -61,6 +94,7 @@ export class MongoQuizRepo implements IQuizRepository {
             doc.duration,
             doc.group,
             doc.image,
+            doc.status || 'active',
             doc._id.toString()
         );
     }

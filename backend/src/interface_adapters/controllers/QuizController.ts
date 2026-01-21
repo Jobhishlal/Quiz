@@ -35,8 +35,20 @@ export class QuizController {
 
     async getQuizzes(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const quizzes = await this.getQuizzesUseCase.execute();
-            res.status(HTTP_STATUS.OK).json({ success: true, message: MESSAGES.QUIZ_FETCHED_SUCCESS, quizzes });
+            const search = req.query.search as string | undefined;
+            const filter = req.query.filter as string | undefined;
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 4; // Defaulting to 4 as per UI example
+
+            const { quizzes, total } = await this.getQuizzesUseCase.execute(search, filter, page, limit);
+            res.status(HTTP_STATUS.OK).json({
+                success: true,
+                message: MESSAGES.QUIZ_FETCHED_SUCCESS,
+                quizzes,
+                total,
+                page,
+                limit
+            });
         } catch (error) {
             console.error(error);
             res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.INTERNAL_ERROR });

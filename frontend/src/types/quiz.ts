@@ -13,11 +13,12 @@ export interface QuizData {
     duration: string;
     group: string;
     image?: string;
+    status?: string;
 }
 
 export interface IQuizService {
     createQuiz(data: QuizData): Promise<void>;
-    getQuizzes(): Promise<QuizData[]>;
+    getQuizzes: (search?: string, filter?: string, page?: number, limit?: number) => Promise<{ quizzes: QuizData[], total: number }>;
     getQuizById(id: string): Promise<QuizData>;
     updateQuiz(id: string, data: QuizData): Promise<void>;
     deleteQuiz(id: string): Promise<void>;

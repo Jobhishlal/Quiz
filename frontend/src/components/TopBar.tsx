@@ -5,7 +5,12 @@ import { logout } from '../store/authSlice';
 import { useNavigate } from 'react-router-dom';
 import type { RootState } from '../store/store';
 
-const TopBar = () => {
+interface TopBarProps {
+    searchTerm?: string;
+    onSearchChange?: (term: string) => void;
+}
+
+const TopBar: React.FC<TopBarProps> = ({ searchTerm = '', onSearchChange }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user: authUser } = useSelector((state: RootState) => state.auth);
@@ -43,6 +48,8 @@ const TopBar = () => {
                     </div>
                     <input
                         type="text"
+                        value={searchTerm}
+                        onChange={(e) => onSearchChange?.(e.target.value)}
                         placeholder="Search here..."
                         className="block w-80 pl-11 pr-12 py-3 bg-gray-50 border-none rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all"
                     />

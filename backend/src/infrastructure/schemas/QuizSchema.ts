@@ -16,6 +16,7 @@ const QuizSchema: Schema = new Schema({
     duration: { type: String, required: true },
     group: { type: String, required: true },
     image: { type: String, required: false },
+    status: { type: String, default: 'active' },
     questions: [
         {
             questionText: { type: String, required: true },

@@ -17,6 +17,7 @@ const CreateQuiz: React.FC = () => {
     const [duration, setDuration] = useState('20 min');
     const [group] = useState('Yr4');
     const [image, setImage] = useState('');
+    const [status, setStatus] = useState('active');
 
     const [questions, setQuestions] = useState<QuizQuestion[]>([]);
     const [isAddQuestionOpen, setIsAddQuestionOpen] = useState(false);
@@ -34,6 +35,7 @@ const CreateQuiz: React.FC = () => {
                         // If the backend returns image, set it. Otherwise keep default or empty.
                         setImage(data.image || '');
                         setQuestions(data.questions || []);
+                        setStatus(data.status || 'active');
                     }
                 } catch (error) {
                     console.error('Failed to fetch quiz', error);
@@ -90,23 +92,24 @@ const CreateQuiz: React.FC = () => {
         ));
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (status: string) => {
         const quizData: QuizData = {
             title,
             description, // Optional now
             duration,
             group,
             image: image || 'default.png',
-            questions
+            questions,
+            status // 'active' or 'inactive'
         };
 
         try {
             if (isEditMode && id) {
                 await quizService.updateQuiz(id, quizData);
-                toast.success('Quiz updated successfully!');
+                toast.success(status === 'active' ? 'Quiz published successfully!' : 'Quiz saved as draft!');
             } else {
                 await quizService.createQuiz(quizData);
-                toast.success('Quiz created successfully!');
+                toast.success(status === 'active' ? 'Quiz created successfully!' : 'Quiz saved as draft!');
             }
             navigate('/admin/quiz');
         } catch (error: any) {
@@ -235,14 +238,14 @@ const CreateQuiz: React.FC = () => {
 
                 {/* Action Buttons */}
                 <div className="flex justify-end items-center gap-4 border-t border-gray-100 pt-8">
-                    <button onClick={() => navigate('/admin/quiz')} className="px-6 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200">
+                    <button onClick={() => handleSubmit('inactive')} className="px-6 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200">
                         Save as Draft
                     </button>
                     <button
-                        onClick={handleSubmit}
+                        onClick={() => handleSubmit('active')}
                         className="px-6 py-2.5 bg-[#0088cc] text-white font-bold rounded-xl hover:bg-[#0077b3]"
                     >
-                        {isEditMode ? 'Update Quiz' : 'Publish Quizzes'}
+                        {isEditMode && status === 'active' ? 'Update Quiz' : 'Publish Quizzes'}
                     </button>
                 </div>
             </div>

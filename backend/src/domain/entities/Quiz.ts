@@ -15,6 +15,7 @@ export class Quiz {
         public duration: string,
         public group: string, // e.g., "Yr4"
         public image?: string,
+        public status: string = 'active',
         public _id?: string
     ) { }
 
@@ -42,7 +43,9 @@ export class Quiz {
                 throw new Error(`Question ${index + 1}: ${QuizValidationMessage.MIN_OPTIONS_REQUIRED}`);
             }
 
-            const uniqueOptions = new Set(validOptions);
+            // Check for duplicates (case-insensitive and trimmed)
+            const normalizedOptions = validOptions.map(opt => opt.trim().toLowerCase());
+            const uniqueOptions = new Set(normalizedOptions);
             if (uniqueOptions.size !== validOptions.length) {
                 throw new Error(`Question ${index + 1}: ${QuizValidationMessage.DUPLICATE_OPTIONS}`);
             }

@@ -46,6 +46,24 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({ isOpen, onClose, on
             return;
         }
 
+        const validOptions = options.filter(opt => opt.trim() !== '');
+        if (validOptions.length < 2) {
+            toast.error('At least 2 options are required');
+            return;
+        }
+
+        if (options.some(opt => opt.trim() === '')) {
+            toast.error('Please fill all option fields');
+            return;
+        }
+
+        // Validate duplicate options (Case Insensitive)
+        const uniqueOptions = new Set(options.map(opt => opt.trim().toLowerCase()));
+        if (uniqueOptions.size !== options.length) {
+            toast.error('Duplicate options are not allowed');
+            return;
+        }
+
         onSave({
             questionText,
             options,

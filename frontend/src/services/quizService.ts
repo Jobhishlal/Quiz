@@ -5,9 +5,16 @@ const quizService: IQuizService = {
     createQuiz: async (data: QuizData): Promise<void> => {
         await apiClient.post('/admin/quiz', data);
     },
-    getQuizzes: async (): Promise<QuizData[]> => {
-        const response = await apiClient.get<{ success: boolean; quizzes: QuizData[] }>('/admin/quiz');
-        return response.data.quizzes;
+    getQuizzes: async (search?: string, filter?: string, page: number = 1, limit: number = 4): Promise<{ quizzes: QuizData[], total: number }> => {
+        const queryParams = new URLSearchParams();
+        if (search) queryParams.append('search', search);
+        if (filter) queryParams.append('filter', filter);
+        queryParams.append('page', page.toString());
+        queryParams.append('limit', limit.toString());
+
+        const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
+        const response = await apiClient.get<{ success: boolean; quizzes: QuizData[]; total: number }>(`/admin/quiz${queryString}`);
+        return { quizzes: response.data.quizzes, total: response.data.total };
     },
     getQuizById: async (id: string): Promise<QuizData> => {
         const response = await apiClient.get<{ success: boolean; quiz: QuizData }>(`/admin/quiz/${id}`);
