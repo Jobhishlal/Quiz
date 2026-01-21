@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { HTTP_STATUS } from '../../shared/enums/HttpStatus';
+import { HTTP_STATUS } from '../enums/HttpStatus';
 import config from '../../config/env';
 
 interface DecodedToken {

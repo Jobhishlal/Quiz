@@ -28,6 +28,23 @@ const StudentSignup: React.FC = () => {
         e.preventDefault();
         setLoading(true);
 
+        const dobDate = new Date(formData.dob);
+        const today = new Date();
+        const minAgeDate = new Date();
+        minAgeDate.setFullYear(today.getFullYear() - 6);
+
+        if (dobDate > today) {
+            toast.error("Date of birth cannot be in the future");
+            setLoading(false);
+            return;
+        }
+
+        if (dobDate > minAgeDate) {
+            toast.error("Student must be at least 6 years old");
+            setLoading(false);
+            return;
+        }
+
         try {
             const response = await studentAuthService.signup(formData);
             if (response.success) {

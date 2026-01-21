@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ILoginAdmin } from '../../application/usecase/admin/login/ILoginAdmin';
 import { AdminValidator } from '../validators/AdminValidator';
 import { MESSAGES } from '../../domain/constants/messages';
-import { CookieHelper } from '../helpers/CookieHelper';
+import { CookieHelper } from '../../shared/helpers/CookieHelper';
 import { HTTP_STATUS } from '../../shared/enums/HttpStatus';
 
 export class AdminController {

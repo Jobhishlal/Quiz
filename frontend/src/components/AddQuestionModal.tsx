@@ -83,7 +83,7 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({ isOpen, onClose, on
                         type="text"
                         value={questionText}
                         onChange={(e) => setQuestionText(e.target.value)}
-                        placeholder="What is the capital city of India?"
+                        placeholder="question"
                         className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 font-medium outline-none focus:ring-2 focus:ring-[#0088cc]/20 focus:border-[#0088cc]"
                     />
                 </div>

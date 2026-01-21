@@ -18,7 +18,7 @@ import { QuizResultController } from '../controllers/QuizResultController';
 import { SubmitQuiz } from '../../application/usecase/student/quiz/SubmitQuiz';
 import { MongoQuizResultRepo } from '../../infrastructure/repositories/MongoQuizResultRepo';
 import { MongoQuizRepo } from '../../infrastructure/repositories/MongoQuizRepo';
-import { protect } from '../middleware/AuthMiddleware';
+import { protect } from '../../shared/middleware/AuthMiddleware';
 
 import { GetStudentResults } from '../../application/usecase/student/quiz/GetStudentResults';
 

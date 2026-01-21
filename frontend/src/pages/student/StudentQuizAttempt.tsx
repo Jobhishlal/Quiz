@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import type { Quiz } from '../../types/quiz';
 import toast from 'react-hot-toast';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Loader2 } from 'lucide-react';
 
 const StudentQuizAttempt = () => {
     const { id } = useParams<{ id: string }>();
@@ -16,6 +16,7 @@ const StudentQuizAttempt = () => {
     const [answers, setAnswers] = useState<Record<number, string>>({});
     const [timeLeft, setTimeLeft] = useState<number>(0); // in seconds
     const [timerActive, setTimerActive] = useState(false);
+    const [showTimeUpModal, setShowTimeUpModal] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -35,8 +36,9 @@ const StudentQuizAttempt = () => {
             }, 1000);
         } else if (timeLeft === 0 && timerActive) {
             setTimerActive(false);
+            setShowTimeUpModal(true);
+            toast.error("Your time is up!");
             handleSubmit(); // Auto-submit when time runs out
-            toast.error("Time's up! Quiz submitted.");
         }
         return () => clearInterval(interval);
     }, [timerActive, timeLeft, id]);
@@ -121,6 +123,7 @@ const StudentQuizAttempt = () => {
                 const { score, totalQuestions } = response.result;
                 const percentage = Math.round((score / totalQuestions) * 100);
                 setResultData({ score, total: totalQuestions, percentage });
+                setShowTimeUpModal(false); // Close time up modal if open
                 setShowResultModal(true);
                 toast.success("Quiz submitted successfully!");
             }
@@ -142,6 +145,26 @@ const StudentQuizAttempt = () => {
 
     return (
         <div className="max-w-5xl mx-auto p-6 relative">
+            {/* Time Up Modal */}
+            {showTimeUpModal && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl text-center relative border border-red-100">
+                        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-500" rx="5" ry="5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Time's Up!</h2>
+                        <p className="text-gray-500 mb-6">
+                            Your time has run out. Submitting your answers...
+                        </p>
+                        <div className="flex justify-center">
+                            <Loader2 className="w-8 h-8 text-[#0088cc] animate-spin" />
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Result Modal Overlay */}
             {showResultModal && resultData && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
