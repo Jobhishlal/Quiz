@@ -4,9 +4,9 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-import adminRoutes from './interface_adapters/routes/AdminRoutes';
-import quizRoutes from './interface_adapters/routes/QuizRoutes';
-import studentRoutes from './interface_adapters/routes/studentRoutes';
+import adminRoutes from './presentation/routes/AdminRoutes';
+import quizRoutes from './presentation/routes/QuizRoutes';
+import studentRoutes from './presentation/routes/studentRoutes';
 
 const app = express();
 

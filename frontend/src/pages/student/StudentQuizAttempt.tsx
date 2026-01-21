@@ -154,7 +154,7 @@ const StudentQuizAttempt = () => {
                         <div className="flex justify-center mb-4">
                             <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden">
                                 <img
-                                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                                    src="/student_static_img.png"
                                     alt="Student"
                                     className="w-full h-full object-cover"
                                 />
@@ -300,13 +300,13 @@ const StudentQuizAttempt = () => {
                     </div>
 
                     {/* OMR Style Answer Box */}
-                    <div className="border border-[#0088cc] w-32 ml-1">
+                    <div className="border border-[#0088cc] w-48 ml-4 self-start sticky top-4">
                         {/* Box Header containing Question Number */}
-                        <div className="bg-[#0088cc] text-white font-bold text-center py-1">
+                        <div className="bg-[#0088cc] text-white font-bold text-center h-16 flex items-center justify-center text-3xl">
                             {currentQuestionIndex + 1}
                         </div>
                         {/* Box Body containing Options */}
-                        <div className="bg-white p-2 flex flex-col gap-1">
+                        <div className="bg-white p-4 flex flex-col gap-4">
                             {currentQuestion.options.map((option, idx) => {
                                 const optionLetter = String.fromCharCode(65 + idx);
                                 const isSelected = answers[currentQuestionIndex] === option;
@@ -317,9 +317,9 @@ const StudentQuizAttempt = () => {
                                         className="flex items-center justify-between cursor-pointer group"
                                         onClick={() => handleOptionSelect(option)}
                                     >
-                                        <span className="text-xs font-bold text-gray-800 w-4">{optionLetter}</span>
-                                        <div className="w-12 h-4 border border-[#0088cc] flex items-center justify-center relative bg-white">
-                                            {isSelected && <Check className="w-4 h-4 text-green-600 stroke-[3]" />}
+                                        <span className="text-xl font-black text-gray-900 w-8">{optionLetter}</span>
+                                        <div className={`w-24 h-8 border border-[#0088cc] flex items-center justify-center relative bg-white transition-colors ${isSelected ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
+                                            {isSelected && <Check className="w-5 h-5 text-[#0088cc] stroke-[3]" />}
                                         </div>
                                     </div>
                                 )

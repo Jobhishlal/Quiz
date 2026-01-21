@@ -71,7 +71,7 @@ const StudentNavbar = () => {
                 <div className="flex items-center gap-3 pl-2">
                     <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border border-gray-100">
                         <img
-                            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+                            src="/student_static_img.png"
                             alt="Profile"
                             className="w-full h-full object-cover"
                         />

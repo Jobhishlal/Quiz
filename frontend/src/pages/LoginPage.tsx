@@ -72,7 +72,7 @@ const LoginPage: React.FC = () => {
                 <div className="hidden lg:flex flex-col justify-end w-1/2 p-16 pb-20 text-white">
                     <div className="mb-8 flex items-center gap-3">
                         <img
-                            src="/brain logo.png"
+                            src="/brain logo org.png"
                             alt="Logo"
                             className="h-16 w-auto"
                         />
@@ -82,7 +82,7 @@ const LoginPage: React.FC = () => {
                         </h1>
                     </div>
 
-                    <h1 className="text-5xl font-bold leading-tight mb-4 drop-shadow-lg font-sans">
+                    <h1 className="text-[45px] font-bold leading-tight mb-4 drop-shadow-lg">
                         Empower minds through<br />
                         every quiz..!
                     </h1>
@@ -101,8 +101,8 @@ const LoginPage: React.FC = () => {
                 <div className="w-full lg:w-1/2 flex items-center justify-center lg:justify-end lg:pr-32 p-4">
                     <div className="bg-white rounded-[2.5rem] p-10 w-full max-w-md shadow-2xl animate-fade-in-up">
                         <div className="text-center mb-8">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back, {email.split('@')[0] || "Admin"} 👋</h2>
-                            <p className="text-sm text-gray-500 max-w-xs mx-auto">
+                            <h2 className="text-[27px] font-bold text-gray-900 mb-2">Welcome Back, {email.split('@')[0] || "admin"} 👋</h2>
+                            <p className="text-sm text-gray-500 max-w-xs mx-auto font-normal">
                                 Secure entry point for QEHBS admins manage quizzes, users, reports, and analytics ✨
                             </p>
                         </div>

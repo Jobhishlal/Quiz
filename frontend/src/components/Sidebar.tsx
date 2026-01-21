@@ -9,7 +9,8 @@ import {
     MessageSquare,
     Video,
     Settings,
-    ChevronUp
+    ChevronUp,
+    PartyPopper
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -64,24 +65,32 @@ const Sidebar = () => {
 
             {/* Footer / Upgrade Card */}
             <div className="p-4 mt-auto">
-                <div className="bg-gradient-to-br from-[#0e5c83] to-[#127a9e] rounded-2xl p-5 text-white text-center shadow-lg relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-[#0e5c83] to-[#127a9e] rounded-2xl p-5 text-white shadow-lg relative overflow-hidden group">
                     {/* Decorative circle */}
-                    <div className="absolute top-0 left-0 w-16 h-16 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-                    <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-x-1/2 translate-y-1/2"></div>
+                    <div className="absolute top-0 left-0 w-20 h-20 bg-white/10 rounded-full -translate-x-1/3 -translate-y-1/3 blur-sm"></div>
+                    <div className="absolute bottom-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-x-1/3 translate-y-1/3 blur-sm"></div>
 
-                    <div className="bg-white/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 backdrop-blur-sm">
-                        <GraduationCap className="w-6 h-6 text-white" />
+                    {/* Header Section: Icon Left, Promo Text Right */}
+                    <div className="relative flex justify-between items-start mb-6">
+                        <div className="bg-white/20 w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-sm shadow-inner group-hover:scale-110 transition-transform duration-300">
+                            <PartyPopper className="w-6 h-6 text-white" />
+                        </div>
+                        <p className="text-xs font-medium text-white/90 bg-white/10 px-2 py-1 rounded-lg backdrop-blur-sm translate-y-2">
+                            Upgrade Promo %
+                        </p>
                     </div>
 
-                    <p className="text-xs text-white/80 mb-1">Upgrade Promo %</p>
-                    <h3 className="text-lg font-bold mb-2">Upgrade to Premium</h3>
-                    <p className="text-[10px] text-white/70 mb-4 leading-relaxed">
-                        Unlock advanced analytics, auto-reports, and unlimited quiz creation. Take your admin control to the next level.
-                    </p>
+                    {/* Content Section: Centered */}
+                    <div className="relative text-center z-10">
+                        <h3 className="text-2xl font-bold mb-2 tracking-tight">Upgrade to Premium</h3>
+                        <p className="text-[11px] text-white/80 mb-5 leading-relaxed font-medium">
+                            Unlock advanced analytics, auto-reports, and unlimited quiz creation. Take your admin control to the next level.
+                        </p>
 
-                    <button className="w-full bg-white text-[#0e5c83] font-bold py-2.5 rounded-xl text-sm hover:bg-gray-50 transition-colors shadow-sm">
-                        Upgrade Now
-                    </button>
+                        <button className="w-full bg-white text-[#0e5c83] font-bold py-3 rounded-xl text-sm hover:bg-gray-50 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0">
+                            Upgrade Now
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
