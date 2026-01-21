@@ -21,6 +21,23 @@ export class MongoQuizRepo implements IQuizRepository {
         return docs.map(doc => this.mapToEntity(doc));
     }
 
+    async findById(id: string): Promise<Quiz | null> {
+        const doc = await QuizModel.findById(id).lean();
+        if (!doc) return null;
+        return this.mapToEntity(doc);
+    }
+
+    async update(id: string, quiz: Partial<Quiz>): Promise<Quiz | null> {
+        const doc = await QuizModel.findByIdAndUpdate(id, quiz, { new: true }).lean();
+        if (!doc) return null;
+        return this.mapToEntity(doc);
+    }
+
+    async delete(id: string): Promise<boolean> {
+        const result = await QuizModel.findByIdAndDelete(id);
+        return !!result;
+    }
+
     private mapToEntity(doc: any): Quiz {
         return new Quiz(
             doc.title,

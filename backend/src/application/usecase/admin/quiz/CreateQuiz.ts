@@ -1,6 +1,6 @@
 import { ICreateQuiz } from './ICreateQuiz';
-import { IQuizRepository } from '../domain/repositories/IQuizRepository';
-import { Quiz } from '../domain/entities/Quiz';
+import { IQuizRepository } from '../../../../domain/repositories/IQuizRepository';
+import { Quiz } from '../../../../domain/entities/Quiz';
 
 export class CreateQuiz implements ICreateQuiz {
     constructor(private quizRepo: IQuizRepository) { }

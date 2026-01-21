@@ -17,4 +17,7 @@ export interface QuizData {
 export interface IQuizService {
     createQuiz(data: QuizData): Promise<void>;
     getQuizzes(): Promise<QuizData[]>;
+    getQuizById(id: string): Promise<QuizData>;
+    updateQuiz(id: string, data: QuizData): Promise<void>;
+    deleteQuiz(id: string): Promise<void>;
 }

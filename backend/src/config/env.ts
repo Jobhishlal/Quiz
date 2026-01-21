@@ -21,7 +21,7 @@ const config: Config = {
     port: parseInt(process.env.PORT || '5000', 10),
     mongoUri: process.env.MONGO_URI || 'mongodb://localhost:27017/quiz-app',
     admin: {
-        email: process.env.ADMIN_EMAIL || 'admin@example.com',
+        email: process.env.ADMIN_EMAIL || 'admin@gmail.com',
         pass: process.env.ADMIN_PASSWORD || 'admin123',
     },
     jwt: {

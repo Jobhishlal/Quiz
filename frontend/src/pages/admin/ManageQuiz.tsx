@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { QuizData } from '../../types/quiz';
 import quizService from '../../services/quizService';
-import { MoreHorizontal } from 'lucide-react';
-
-import CreateQuiz from './CreateQuiz';
+import { MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const ManageQuiz: React.FC = () => {
+    const navigate = useNavigate();
     const [quizzes, setQuizzes] = useState<QuizData[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    useEffect(() => {
-        fetchQuizzes();
-    }, []);
+    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
     const fetchQuizzes = async () => {
         try {
@@ -20,8 +17,41 @@ const ManageQuiz: React.FC = () => {
             setQuizzes(data);
         } catch (error) {
             console.error('Failed to fetch quizzes', error);
+            toast.error('Failed to fetch quizzes');
         } finally {
             setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchQuizzes();
+    }, []);
+
+    const toggleDropdown = (id: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setActiveDropdown(activeDropdown === id ? null : id);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = () => setActiveDropdown(null);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
+
+    const handleEdit = (id: string) => {
+        navigate(`/admin/edit-quiz/${id}`);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (window.confirm('Are you sure you want to delete this quiz?')) {
+            try {
+                await quizService.deleteQuiz(id);
+                toast.success('Quiz deleted successfully');
+                fetchQuizzes();
+            } catch (error) {
+                console.error('Failed to delete quiz', error);
+                toast.error('Failed to delete quiz');
+            }
         }
     };
 
@@ -30,23 +60,17 @@ const ManageQuiz: React.FC = () => {
             <div className="flex justify-between items-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-900">Manage Quiz</h2>
                 <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => navigate('/admin/create-quiz')}
                     className="bg-[#0088cc] text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-[#0077b3] transition-colors"
                 >
                     Create New Quizzes
                 </button>
             </div>
 
-            <CreateQuiz
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onSuccess={fetchQuizzes}
-            />
-
             <div className="mb-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Active Quizzes</h3>
 
-                <div className="w-full overflow-x-auto">
+                <div className="w-full overflow-x-auto min-h-[400px]">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-gray-100">
@@ -83,10 +107,30 @@ const ManageQuiz: React.FC = () => {
                                         <td className="py-4 px-4 text-gray-600 text-sm">
                                             {quiz.duration}
                                         </td>
-                                        <td className="py-4 px-4 text-right">
-                                            <button className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600">
+                                        <td className="py-4 px-4 text-right relative">
+                                            <button
+                                                onClick={(e) => toggleDropdown(quiz._id!, e)}
+                                                className="p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600"
+                                            >
                                                 <MoreHorizontal className="w-5 h-5" />
                                             </button>
+
+                                            {activeDropdown === quiz._id && (
+                                                <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-gray-100 z-10 py-1">
+                                                    <button
+                                                        onClick={() => handleEdit(quiz._id!)}
+                                                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                                    >
+                                                        <Edit className="w-4 h-4" /> Edit
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(quiz._id!)}
+                                                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" /> Delete
+                                                    </button>
+                                                </div>
+                                            )}
                                         </td>
                                     </tr>
                                 ))

@@ -1,6 +1,6 @@
-import { IAdminRepository } from '../domain/repositories/IAdminRepository';
-import { LoginDTO } from '../interface_adapters/dtos/LoginDTO';
-import { JwtService } from '../infrastructure/services/JwtService';
+import { IAdminRepository } from '../../../../domain/repositories/IAdminRepository';
+import { LoginDTO } from '../../../dto/LoginDTO';
+import { JwtService } from '../../../../infrastructure/services/JwtService';
 import { ILoginAdmin } from './ILoginAdmin';
 
 export class LoginAdmin implements ILoginAdmin {

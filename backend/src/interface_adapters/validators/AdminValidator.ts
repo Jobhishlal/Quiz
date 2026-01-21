@@ -1,4 +1,4 @@
-import { LoginDTO } from '../dtos/LoginDTO';
+import { LoginDTO } from '../../application/dto/LoginDTO';
 import { MESSAGES } from '../../domain/constants/messages';
 
 export class AdminValidator {

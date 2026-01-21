@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { AdminController } from '../controllers/AdminController';
-import { LoginAdmin } from '../../usecases/LoginAdmin';
+import { LoginAdmin } from '../../application/usecase/admin/login/LoginAdmin';
 import { EnvAdminRepository } from '../../infrastructure/repositories/EnvAdminRepository';
 
 const router = Router();
