@@ -20,7 +20,24 @@ export class QuizController {
 
     async createQuiz(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const quizData = req.body;
+            const quizData = { ...req.body };
+
+            // Handle file upload
+            if ((req as any).file) {
+                // Determine base URL dynamically or hardcode for now based on app config
+                const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
+                quizData.image = baseUrl + (req as any).file.filename;
+            }
+
+            // Handle questions parsing if it comes as a string (FormData compatibility)
+            if (typeof quizData.questions === 'string') {
+                try {
+                    quizData.questions = JSON.parse(quizData.questions);
+                } catch (e) {
+                    console.error('Error parsing questions:', e);
+                }
+            }
+
             const quiz = await this.createQuizUseCase.execute(quizData);
             res.status(HTTP_STATUS.CREATED).json({ success: true, message: MESSAGES.QUIZ_CREATED, quiz });
         } catch (error: any) {
@@ -77,11 +94,27 @@ export class QuizController {
     async updateQuiz(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const id = req.params.id as string;
-            const quizData = req.body;
+            const quizData = { ...req.body };
+
             if (!id) {
                 res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: MESSAGES.QUIZ_ID_REQUIRED });
                 return;
             }
+
+            if ((req as any).file) {
+                const baseUrl = `${req.protocol}://${req.get('host')}/uploads/`;
+                quizData.image = baseUrl + (req as any).file.filename;
+            }
+
+            // Handle questions parsing
+            if (typeof quizData.questions === 'string') {
+                try {
+                    quizData.questions = JSON.parse(quizData.questions);
+                } catch (e) {
+                    console.error('Error parsing questions:', e);
+                }
+            }
+
             const updatedQuiz = await this.updateQuizUseCase.execute(id, quizData);
             if (!updatedQuiz) {
                 res.status(HTTP_STATUS.NOT_FOUND).json({ success: false, message: MESSAGES.QUIZ_NOT_FOUND });

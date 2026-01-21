@@ -16,7 +16,7 @@ const CreateQuiz: React.FC = () => {
     const [description, setDescription] = useState('');
     const [duration, setDuration] = useState('20 min');
     const [group] = useState('Yr4');
-    const [image, setImage] = useState('');
+    const [image, setImage] = useState<File | string>('');
     const [status, setStatus] = useState('active');
 
     const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -93,22 +93,27 @@ const CreateQuiz: React.FC = () => {
     };
 
     const handleSubmit = async (status: string) => {
-        const quizData: QuizData = {
-            title,
-            description, // Optional now
-            duration,
-            group,
-            image: image || 'default.png',
-            questions,
-            status // 'active' or 'inactive'
-        };
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('duration', duration);
+        formData.append('group', group);
+        formData.append('status', status);
+        formData.append('questions', JSON.stringify(questions));
+
+        if (image instanceof File) {
+            formData.append('image', image);
+        } else if (typeof image === 'string') {
+            // Keep existing image URL if not changed
+            formData.append('image', image);
+        }
 
         try {
             if (isEditMode && id) {
-                await quizService.updateQuiz(id, quizData);
+                await quizService.updateQuiz(id, formData as any); // Type cast due to strict QuizData interface
                 toast.success(status === 'active' ? 'Quiz published successfully!' : 'Quiz saved as draft!');
             } else {
-                await quizService.createQuiz(quizData);
+                await quizService.createQuiz(formData as any);
                 toast.success(status === 'active' ? 'Quiz created successfully!' : 'Quiz saved as draft!');
             }
             navigate('/admin/quiz');
@@ -163,10 +168,21 @@ const CreateQuiz: React.FC = () => {
                     <div>
                         <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Image</label>
                         <div className="flex items-center gap-3 border border-gray-200 rounded-xl px-4 py-3">
-                            <span className="text-gray-900 font-medium flex-1 truncate">{image || 'File'}</span>
+                            <span className="text-gray-900 font-medium flex-1 truncate">
+                                {image instanceof File ? image.name : (image ? String(image).split('/').pop() : 'Choose File')}
+                            </span>
                             <div className="relative cursor-pointer text-[#0088cc] font-bold text-sm hover:underline">
                                 Choose file
-                                <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => setImage(e.target.files?.[0]?.name || '')} />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                    onChange={(e) => {
+                                        if (e.target.files && e.target.files[0]) {
+                                            setImage(e.target.files[0]);
+                                        }
+                                    }}
+                                />
                             </div>
                             <Upload className="w-5 h-5 text-[#0088cc]" />
                         </div>

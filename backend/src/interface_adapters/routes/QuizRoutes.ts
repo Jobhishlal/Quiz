@@ -27,10 +27,12 @@ const quizController = new QuizController(
     deleteQuestionUseCase
 );
 
-router.post('/quiz', (req, res, next) => quizController.createQuiz(req, res, next));
+import { upload } from '../../infrastructure/config/MulterConfig';
+
+router.post('/quiz', upload.single('image'), (req, res, next) => quizController.createQuiz(req, res, next));
 router.get('/quiz', (req, res, next) => quizController.getQuizzes(req, res, next));
 router.get('/quiz/:id', (req, res, next) => quizController.getQuizById(req, res, next));
-router.put('/quiz/:id', (req, res, next) => quizController.updateQuiz(req, res, next));
+router.put('/quiz/:id', upload.single('image'), (req, res, next) => quizController.updateQuiz(req, res, next));
 router.delete('/quiz/:id', (req, res, next) => quizController.deleteQuiz(req, res, next));
 router.delete('/quiz/:id/question/:questionId', (req, res, next) => quizController.deleteQuestion(req, res, next));
 

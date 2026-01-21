@@ -1,7 +1,18 @@
 export const AUTH_MESSAGES = {
     LOGIN_SUCCESS: 'Login successful',
+    SIGNUP_SUCCESS: 'Student registered successfully',
     INVALID_CREDENTIALS: 'Invalid email or password',
     EMAIL_REQUIRED: 'Email is required',
     PASSWORD_REQUIRED: 'Password is required',
     INTERNAL_ERROR: 'Internal Server Error',
+    STUDENT_EXISTS: 'Student with this email already exists',
+    ALL_FIELDS_REQUIRED: 'All fields are required',
+    INVALID_EMAIL_FORMAT: 'Invalid email format',
+    WEAK_PASSWORD: 'Password must be at least 8 characters long',
+    USER_NOT_FOUND: 'User does not exist please signup',
+    INVALID_ACCOUNT_STATE: 'Invalid account state',
+    INVALID_PASSWORD: 'Invalid password',
+    EMAIL_PASSWORD_REQUIRED: 'Email and password are required',
+    SIGNUP_FAILED: 'Signup failed',
+    LOGIN_FAILED: 'Login failed',
 };

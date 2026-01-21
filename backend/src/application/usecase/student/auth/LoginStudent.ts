@@ -4,6 +4,8 @@ import { IStudentRepository } from '../../../../domain/repositories/IStudentRepo
 import { JwtService } from '../../../../infrastructure/services/JwtService';
 import { LoginDto } from '../../../../domain/dtos/auth/LoginDto';
 import { AuthResponse } from '../../../../domain/types/auth/AuthResponse';
+import { AuthValidator } from '../../../validators/AuthValidator';
+import { AUTH_MESSAGES } from '../../../../domain/constants/auth/AuthMessages';
 
 export class LoginStudent implements ILoginStudent {
     constructor(
@@ -13,22 +15,20 @@ export class LoginStudent implements ILoginStudent {
     async execute(data: LoginDto): Promise<AuthResponse> {
         const { email, password } = data;
 
-        if (!email || !password) {
-            throw new Error('Email and password are required');
-        }
+        AuthValidator.validateLoginInput(data);
 
         const student = await this.studentRepo.findByEmail(email);
         if (!student) {
-            throw new Error('User does not exist please signup');
+            throw new Error(AUTH_MESSAGES.USER_NOT_FOUND);
         }
 
         if (!student.password) {
-            throw new Error('Invalid account state');
+            throw new Error(AUTH_MESSAGES.INVALID_ACCOUNT_STATE);
         }
 
         const isPasswordValid = await bcrypt.compare(password, student.password);
         if (!isPasswordValid) {
-            throw new Error('Invalid password'); // Or keep generic if strict security not required, but user asked for specific errors
+            throw new Error(AUTH_MESSAGES.INVALID_PASSWORD);
         }
 
         const payload = {
@@ -43,7 +43,8 @@ export class LoginStudent implements ILoginStudent {
         return {
             success: true,
             accessToken,
-            refreshToken
+            refreshToken,
+            username: student.username
         };
     }
 }

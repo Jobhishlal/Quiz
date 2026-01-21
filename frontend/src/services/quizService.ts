@@ -2,8 +2,11 @@ import apiClient from './apiClient';
 import type { IQuizService, QuizData } from '../types/quiz';
 
 const quizService: IQuizService = {
-    createQuiz: async (data: QuizData): Promise<void> => {
-        await apiClient.post('/admin/quiz', data);
+    createQuiz: async (data: QuizData | FormData): Promise<void> => {
+        const config = {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        };
+        await apiClient.post('/admin/quiz', data, config);
     },
     getQuizzes: async (search?: string, filter?: string, page: number = 1, limit: number = 4): Promise<{ quizzes: QuizData[], total: number }> => {
         const queryParams = new URLSearchParams();
@@ -20,8 +23,11 @@ const quizService: IQuizService = {
         const response = await apiClient.get<{ success: boolean; quiz: QuizData }>(`/admin/quiz/${id}`);
         return response.data.quiz;
     },
-    updateQuiz: async (id: string, data: QuizData): Promise<void> => {
-        await apiClient.put(`/admin/quiz/${id}`, data);
+    updateQuiz: async (id: string, data: QuizData | FormData): Promise<void> => {
+        const config = {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        };
+        await apiClient.put(`/admin/quiz/${id}`, data, config);
     },
     deleteQuiz: async (id: string): Promise<void> => {
         await apiClient.delete(`/admin/quiz/${id}`);

@@ -3,6 +3,8 @@ import { ISignupStudent } from './ISignupStudent';
 import { Student } from '../../../../domain/entities/Student';
 import { JwtService } from '../../../../infrastructure/services/JwtService';
 import bcrypt from 'bcryptjs';
+import { AuthValidator } from '../../../validators/AuthValidator';
+import { AUTH_MESSAGES } from '../../../../domain/constants/auth/AuthMessages';
 
 export class SignupStudent implements ISignupStudent {
     constructor(private studentRepo: IStudentRepository) { }
@@ -10,24 +12,13 @@ export class SignupStudent implements ISignupStudent {
     async execute(studentData: any): Promise<{ accessToken: string; refreshToken: string }> {
         const { username, email, dob, password } = studentData;
 
-        // 0. Basic Validation
-        if (!username || !email || !dob || !password) {
-            throw new Error('All fields are required');
-        }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            throw new Error('Invalid email format');
-        }
-
-        if (password.length < 8) {
-            throw new Error('Password must be at least 8 characters long');
-        }
+        AuthValidator.validateSignupInput(studentData);
 
         // 1. Check if user exists
         const existingStudent = await this.studentRepo.findByEmail(email);
         if (existingStudent) {
-            throw new Error('Student with this email already exists');
+            throw new Error(AUTH_MESSAGES.STUDENT_EXISTS);
         }
 
         // 2. Hash password

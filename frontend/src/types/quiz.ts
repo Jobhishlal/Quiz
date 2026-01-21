@@ -16,6 +16,8 @@ export interface QuizData {
     status?: string;
 }
 
+export type Quiz = QuizData;
+
 export interface IQuizService {
     createQuiz(data: QuizData): Promise<void>;
     getQuizzes: (search?: string, filter?: string, page?: number, limit?: number) => Promise<{ quizzes: QuizData[], total: number }>;

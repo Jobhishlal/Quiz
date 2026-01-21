@@ -6,6 +6,10 @@ import CreateQuiz from './pages/admin/CreateQuiz';
 import AuthLayout from './layouts/AuthLayout';
 import StudentSignup from './pages/auth/StudentSignup';
 import StudentLogin from './pages/auth/StudentLogin';
+import PublicStudentRoute from './routes/PublicStudentRoute';
+import StudentLayout from './components/layout/StudentLayout';
+import StudentDashboard from './pages/student/StudentDashboard';
+import StudentHomework from './pages/student/StudentHomework';
 import './index.css';
 
 // Simple Dashboard Placeholder
@@ -39,8 +43,16 @@ function App() {
 
         {/* Student Auth Routes */}
         <Route path="/student" element={<AuthLayout />}>
-          <Route path="signup" element={<StudentSignup />} />
-          <Route path="login" element={<StudentLogin />} />
+          <Route element={<PublicStudentRoute />}>
+            <Route path="signup" element={<StudentSignup />} />
+            <Route path="login" element={<StudentLogin />} />
+          </Route>
+        </Route>
+
+        {/* Student Dashboard Routes */}
+        <Route path="/student" element={<StudentLayout />}>
+          <Route path="dashboard" element={<StudentDashboard />} />
+          <Route path="homework" element={<StudentHomework />} />
         </Route>
 
         {/* Redirect root to login */}

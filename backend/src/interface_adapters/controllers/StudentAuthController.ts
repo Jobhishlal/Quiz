@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ISignupStudent } from '../../application/usecase/student/auth/ISignupStudent';
 import { ILoginStudent } from '../../application/usecase/student/auth/ILoginStudent';
 import { HTTP_STATUS } from '../../shared/enums/HttpStatus';
+import { AUTH_MESSAGES } from '../../domain/constants/auth/AuthMessages';
 
 export class StudentAuthController {
     constructor(
@@ -24,15 +25,22 @@ export class StudentAuthController {
 
             res.status(HTTP_STATUS.CREATED).json({
                 success: true,
-                message: 'Student registered successfully',
+                message: AUTH_MESSAGES.SIGNUP_SUCCESS,
                 accessToken: tokens.accessToken
             });
         } catch (error: any) {
             console.error(error);
-            if (error.message === 'Student with this email already exists') {
-                res.status(HTTP_STATUS.CONFLICT).json({ success: false, message: error.message });
+            const message = error.message;
+            if (message === AUTH_MESSAGES.STUDENT_EXISTS) {
+                res.status(HTTP_STATUS.CONFLICT).json({ success: false, message });
+            } else if (
+                message === AUTH_MESSAGES.ALL_FIELDS_REQUIRED ||
+                message === AUTH_MESSAGES.INVALID_EMAIL_FORMAT ||
+                message === AUTH_MESSAGES.WEAK_PASSWORD
+            ) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message });
             } else {
-                res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: error.message || 'Signup failed' });
+                res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: message || AUTH_MESSAGES.SIGNUP_FAILED });
             }
         }
     }
@@ -52,15 +60,21 @@ export class StudentAuthController {
 
             res.status(HTTP_STATUS.OK).json({
                 success: true,
-                message: 'Login successful',
+                message: AUTH_MESSAGES.LOGIN_SUCCESS,
                 accessToken: tokens.accessToken
             });
         } catch (error: any) {
             console.error(error);
-            if (error.message === 'Invalid email or password') {
-                res.status(HTTP_STATUS.UNAUTHORIZED).json({ success: false, message: 'Invalid email or password' });
+            const message = error.message;
+
+            if (message === AUTH_MESSAGES.USER_NOT_FOUND) {
+                res.status(HTTP_STATUS.NOT_FOUND).json({ success: false, message });
+            } else if (message === AUTH_MESSAGES.INVALID_PASSWORD || message === AUTH_MESSAGES.INVALID_CREDENTIALS) {
+                res.status(HTTP_STATUS.UNAUTHORIZED).json({ success: false, message });
+            } else if (message === AUTH_MESSAGES.EMAIL_PASSWORD_REQUIRED) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message });
             } else {
-                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: 'Login failed' });
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: AUTH_MESSAGES.LOGIN_FAILED });
             }
         }
     }

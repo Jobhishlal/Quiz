@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { User, Lock, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 import AuthInput from '../../components/AuthInput';
 import studentAuthService from '../../services/studentAuthService';
+import { setCredentials } from '../../store/authSlice';
 
 const StudentLogin: React.FC = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
@@ -26,7 +29,11 @@ const StudentLogin: React.FC = () => {
         try {
             const response = await studentAuthService.login(formData);
             if (response.success) {
-                toast.success('Login successful!');
+                dispatch(setCredentials({
+                    accessToken: response.accessToken,
+                    user: { email: formData.email }
+                }));
+                toast.success(response.message || 'Login successful!');
                 navigate('/student/dashboard');
             }
         } catch (error: any) {
@@ -60,7 +67,7 @@ const StudentLogin: React.FC = () => {
                     icon={<User className="w-5 h-5" />}
                     // value={formData.email}
                     onChange={handleChange}
-                    required
+
                 />
 
                 <AuthInput
@@ -70,7 +77,7 @@ const StudentLogin: React.FC = () => {
                     icon={<Lock className="w-5 h-5" />}
                     value={formData.password}
                     onChange={handleChange}
-                    required
+
                     rightElement={
                         <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-400 hover:text-gray-600">
                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
