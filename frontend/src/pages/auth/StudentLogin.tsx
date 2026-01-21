@@ -31,7 +31,10 @@ const StudentLogin: React.FC = () => {
             if (response.success) {
                 dispatch(setCredentials({
                     accessToken: response.accessToken,
-                    user: { email: formData.email }
+                    user: {
+                        email: formData.email,
+                        username: response.username
+                    }
                 }));
                 toast.success(response.message || 'Login successful!');
                 navigate('/student/dashboard');
@@ -48,12 +51,12 @@ const StudentLogin: React.FC = () => {
     return (
         <div className="w-full">
             <div className="text-center mb-6">
-                <div className="flex items-center justify-center gap-3 mb-3">
-                    <img src="/brain logo.png" alt="QEHBS Logo" className="w-8 h-8 object-contain" />
-                    <h1 className="text-xl font-black text-gray-900 tracking-tight uppercase">QEHBS ONLINE</h1>
+                <div className="flex items-center justify-center gap-3 mb-6">
+                    <img src="/brain logo.png" alt="QEHBS Logo" className="w-10 h-10 object-contain" />
+                    <h1 className="text-2xl font-black text-gray-900 tracking-tight uppercase">QEHBS ONLINE</h1>
                 </div>
 
-                <h2 className="text-xl font-bold text-gray-900 mb-2">Sign in your account</h2>
+                <h2 className="text-xl font-black text-gray-900 mb-2">Sign in your account</h2>
                 <p className="text-gray-500 text-sm max-w-xs mx-auto leading-relaxed">
                     Sign in to your account and get start your quiz, meetings and exams reports
                 </p>
@@ -85,11 +88,7 @@ const StudentLogin: React.FC = () => {
                     }
                 />
 
-                <div className="flex justify-end mb-4">
-                    <Link to="/student/forgot-password" className="text-sm font-semibold text-gray-500 hover:text-[#0088cc]">
-                        Forgot Password?
-                    </Link>
-                </div>
+
 
                 <button
                     type="submit"

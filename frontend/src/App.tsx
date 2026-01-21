@@ -10,7 +10,9 @@ import PublicStudentRoute from './routes/PublicStudentRoute';
 import StudentLayout from './components/layout/StudentLayout';
 import StudentDashboard from './pages/student/StudentDashboard';
 import StudentHomework from './pages/student/StudentHomework';
+import StudentQuizAttempt from './pages/student/StudentQuizAttempt';
 import './index.css';
+
 
 // Simple Dashboard Placeholder
 const Dashboard = () => {
@@ -53,6 +55,7 @@ function App() {
         <Route path="/student" element={<StudentLayout />}>
           <Route path="dashboard" element={<StudentDashboard />} />
           <Route path="homework" element={<StudentHomework />} />
+          <Route path="homework/:id" element={<StudentQuizAttempt />} />
         </Route>
 
         {/* Redirect root to login */}

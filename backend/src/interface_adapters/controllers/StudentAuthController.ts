@@ -61,7 +61,8 @@ export class StudentAuthController {
             res.status(HTTP_STATUS.OK).json({
                 success: true,
                 message: AUTH_MESSAGES.LOGIN_SUCCESS,
-                accessToken: tokens.accessToken
+                accessToken: tokens.accessToken,
+                username: tokens.username // Include username
             });
         } catch (error: any) {
             console.error(error);

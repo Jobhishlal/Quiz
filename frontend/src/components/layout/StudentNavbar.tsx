@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const StudentNavbar = () => {
     const { user } = useSelector((state: RootState) => state.auth);
+    console.log('StudentNavbar: Current User State:', user);
     const [searchValue, setSearchValue] = useState('');
     const navigate = useNavigate();
 
@@ -25,7 +26,7 @@ const StudentNavbar = () => {
             <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                     <h1 className="text-xl font-bold text-gray-900">
-                        {user?.username || 'Student'}
+                        {user?.username || user?.email?.split('@')[0] || 'Student'}
                     </h1>
                     <span className="text-2xl">👋🏻</span>
                     <div className="flex items-center gap-1 bg-green-50 px-2 py-0.5 rounded-full">

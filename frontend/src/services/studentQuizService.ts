@@ -23,8 +23,26 @@ const studentQuizService = {
 
     getQuizById: async (id: string): Promise<Quiz> => {
         try {
-            const response = await apiClient.get(`/quiz/${id}`);
+            const response = await apiClient.get(`/admin/quiz/${id}`);
             return response.data.quiz;
+        } catch (error: any) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    submitQuiz: async (quizId: string, answers: Record<number, string>) => {
+        try {
+            const response = await apiClient.post('/student/quiz/submit', { quizId, answers });
+            return response.data;
+        } catch (error: any) {
+            throw error.response?.data || error.message;
+        }
+    },
+
+    getStudentResults: async () => {
+        try {
+            const response = await apiClient.get('/student/quiz/results');
+            return response.data.results;
         } catch (error: any) {
             throw error.response?.data || error.message;
         }

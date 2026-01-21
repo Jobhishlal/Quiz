@@ -3,12 +3,15 @@ import studentQuizService from '../../services/studentQuizService';
 import type { Quiz } from '../../types/quiz';
 import toast from 'react-hot-toast';
 
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 const StudentHomework = () => {
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    const [completedQuizIds, setCompletedQuizIds] = useState<Set<string>>(new Set());
     const [loading, setLoading] = useState(true);
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    console.log('StudentHomework rendered, navigate:', navigate);
     const searchQuery = searchParams.get('search') || '';
 
     useEffect(() => {
@@ -18,8 +21,16 @@ const StudentHomework = () => {
     const fetchQuizzes = async () => {
         try {
             setLoading(true);
-            const response = await studentQuizService.getAllQuizzes(1, 100, searchQuery); // Pass search query
-            setQuizzes(response.quizzes);
+            const [quizzesResponse, resultsResponse] = await Promise.all([
+                studentQuizService.getAllQuizzes(1, 100, searchQuery),
+                studentQuizService.getStudentResults()
+            ]);
+
+            setQuizzes(quizzesResponse.quizzes);
+
+            const attemptedIds = new Set(resultsResponse.map((r: any) => r.quizId));
+            setCompletedQuizIds(attemptedIds);
+
         } catch (error: any) {
             console.error(error);
             toast.error('Failed to load homework.');
@@ -91,9 +102,21 @@ const StudentHomework = () => {
                                 </div>
 
                                 <div className="flex justify-end">
-                                    <button className="bg-[#0088cc] text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30 hover:bg-[#0077b3] transition-colors">
-                                        Attend Now
-                                    </button>
+                                    {completedQuizIds.has(quiz._id || '') ? (
+                                        <button
+                                            onClick={() => navigate(`/student/homework/${quiz._id}`)}
+                                            className="bg-green-100 text-green-700 px-6 py-2 rounded-xl text-sm font-bold shadow-sm border border-green-200 hover:bg-green-200 transition-colors"
+                                        >
+                                            Attempt Again
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => navigate(`/student/homework/${quiz._id}`)}
+                                            className="bg-[#0088cc] text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30 hover:bg-[#0077b3] transition-colors"
+                                        >
+                                            Attend Now
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>

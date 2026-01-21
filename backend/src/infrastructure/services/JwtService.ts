@@ -3,7 +3,7 @@ import config from '../../config/env';
 
 export class JwtService {
     static generateAccessToken(payload: string | object | Buffer): string {
-        return jwt.sign(payload, config.jwt.accessSecret, { expiresIn: '15m' });
+        return jwt.sign(payload, config.jwt.accessSecret, { expiresIn: '1d' });
     }
 
     static generateRefreshToken(payload: string | object | Buffer): string {
