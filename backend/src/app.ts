@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import adminRoutes from './interface_adapters/routes/AdminRoutes';
 import quizRoutes from './interface_adapters/routes/QuizRoutes';
+import studentRoutes from './interface_adapters/routes/studentRoutes';
 
 const app = express();
 
@@ -16,10 +17,10 @@ app.use(cors({
 }));
 app.use(express.json());
 
-
 // Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin', quizRoutes);
+app.use('/api/student', studentRoutes);
 
 app.get('/', (req, res) => {
     res.send('Server is running');

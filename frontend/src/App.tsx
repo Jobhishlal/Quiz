@@ -3,6 +3,9 @@ import LoginPage from './pages/LoginPage';
 import AdminLayout from './layouts/AdminLayout';
 import ManageQuiz from './pages/admin/ManageQuiz';
 import CreateQuiz from './pages/admin/CreateQuiz';
+import AuthLayout from './layouts/AuthLayout';
+import StudentSignup from './pages/auth/StudentSignup';
+import StudentLogin from './pages/auth/StudentLogin';
 import './index.css';
 
 // Simple Dashboard Placeholder
@@ -31,7 +34,13 @@ function App() {
           <Route path="quiz" element={<ManageQuiz />} />
           <Route path="create-quiz" element={<CreateQuiz />} />
           <Route path="edit-quiz/:id" element={<CreateQuiz />} />
-          {/* Add more admin routes here */}
+
+        </Route>
+
+        {/* Student Auth Routes */}
+        <Route path="/student" element={<AuthLayout />}>
+          <Route path="signup" element={<StudentSignup />} />
+          <Route path="login" element={<StudentLogin />} />
         </Route>
 
         {/* Redirect root to login */}
