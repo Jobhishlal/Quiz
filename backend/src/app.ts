@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import adminRoutes from './interface_adapters/routes/AdminRoutes';
+import quizRoutes from './interface_adapters/routes/QuizRoutes';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/admin', adminRoutes);
+app.use('/api/admin', quizRoutes);
 
 app.get('/', (req, res) => {
     res.send('Server is running');

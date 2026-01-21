@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import AdminLayout from './layouts/AdminLayout';
+import ManageQuiz from './pages/admin/ManageQuiz';
 import './index.css';
 
 // Simple Dashboard Placeholder
@@ -26,6 +27,7 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="profile" element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="quiz" element={<ManageQuiz />} />
           {/* Add more admin routes here */}
         </Route>
 
