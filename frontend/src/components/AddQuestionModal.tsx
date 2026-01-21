@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
 import type { QuizQuestion } from '../types/quiz';
+import toast from 'react-hot-toast';
 
 interface AddQuestionModalProps {
     isOpen: boolean;
@@ -38,8 +39,10 @@ const AddQuestionModal: React.FC<AddQuestionModalProps> = ({ isOpen, onClose, on
     };
 
     const handleSave = () => {
-        if (!questionText || options.some(opt => !opt) || !correctAnswer) {
-            alert('Please fill all fields');
+        // Basic check to ensure we don't save completely empty junk, 
+        // but removing the heavy logic as requested.
+        if (!questionText.trim() || !correctAnswer) {
+            toast.error('Please fill required fields');
             return;
         }
 

@@ -18,6 +18,9 @@ const quizService: IQuizService = {
     },
     deleteQuiz: async (id: string): Promise<void> => {
         await apiClient.delete(`/admin/quiz/${id}`);
+    },
+    deleteQuestion: async (quizId: string, questionId: string): Promise<void> => {
+        await apiClient.delete(`/admin/quiz/${quizId}/question/${questionId}`);
     }
 };
 

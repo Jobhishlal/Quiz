@@ -2,6 +2,7 @@ export interface QuizQuestion {
     questionText: string;
     options: string[];
     correctAnswer: string;
+    _id?: string;
 }
 
 export interface QuizData {
@@ -20,4 +21,5 @@ export interface IQuizService {
     getQuizById(id: string): Promise<QuizData>;
     updateQuiz(id: string, data: QuizData): Promise<void>;
     deleteQuiz(id: string): Promise<void>;
+    deleteQuestion(quizId: string, questionId: string): Promise<void>;
 }

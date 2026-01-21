@@ -38,11 +38,26 @@ export class MongoQuizRepo implements IQuizRepository {
         return !!result;
     }
 
+    async deleteQuestion(quizId: string, questionId: string): Promise<boolean> {
+        const result = await QuizModel.updateOne(
+            { _id: quizId },
+            { $pull: { questions: { _id: questionId } } }
+        );
+        return result.modifiedCount > 0;
+    }
+
     private mapToEntity(doc: any): Quiz {
+        const questions = doc.questions.map((q: any) => ({
+            questionText: q.questionText,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+            _id: q._id ? q._id.toString() : undefined
+        }));
+
         return new Quiz(
             doc.title,
             doc.description,
-            doc.questions,
+            questions,
             doc.duration,
             doc.group,
             doc.image,

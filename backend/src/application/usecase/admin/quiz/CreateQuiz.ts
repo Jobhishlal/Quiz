@@ -14,6 +14,7 @@ export class CreateQuiz implements ICreateQuiz {
             quizData.group,
             quizData.image
         );
+        quiz.validate();
         return await this.quizRepo.create(quiz);
     }
 }

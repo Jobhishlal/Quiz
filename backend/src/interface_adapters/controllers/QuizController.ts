@@ -4,6 +4,7 @@ import { IGetQuizzes } from '../../application/usecase/admin/quiz/IGetQuizzes';
 import { IGetQuizById } from '../../application/usecase/admin/quiz/IGetQuizById';
 import { IUpdateQuiz } from '../../application/usecase/admin/quiz/IUpdateQuiz';
 import { IDeleteQuiz } from '../../application/usecase/admin/quiz/IDeleteQuiz';
+import { IDeleteQuestion } from '../../application/usecase/admin/quiz/IDeleteQuestion';
 import { HTTP_STATUS } from '../../shared/enums/HttpStatus';
 import { MESSAGES } from '../../domain/constants/messages';
 
@@ -13,7 +14,8 @@ export class QuizController {
         private getQuizzesUseCase: IGetQuizzes,
         private getQuizByIdUseCase: IGetQuizById,
         private updateQuizUseCase: IUpdateQuiz,
-        private deleteQuizUseCase: IDeleteQuiz
+        private deleteQuizUseCase: IDeleteQuiz,
+        private deleteQuestionUseCase: IDeleteQuestion
     ) { }
 
     async createQuiz(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -21,9 +23,13 @@ export class QuizController {
             const quizData = req.body;
             const quiz = await this.createQuizUseCase.execute(quizData);
             res.status(HTTP_STATUS.CREATED).json({ success: true, message: MESSAGES.QUIZ_CREATED, quiz });
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.INTERNAL_ERROR });
+            if (error instanceof Error) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: error.message });
+            } else {
+                res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.INTERNAL_ERROR });
+            }
         }
     }
 
@@ -89,6 +95,28 @@ export class QuizController {
                 return;
             }
             res.status(HTTP_STATUS.OK).json({ success: true, message: MESSAGES.QUIZ_DELETED });
+        } catch (error) {
+            console.error(error);
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.INTERNAL_ERROR });
+        }
+    }
+
+    async deleteQuestion(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const quizId = req.params.id as string;
+            const questionId = req.params.questionId as string;
+
+            if (!quizId || !questionId) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({ success: false, message: 'Quiz ID and Question ID are required' });
+                return;
+            }
+
+            const success = await this.deleteQuestionUseCase.execute(quizId, questionId);
+            if (!success) {
+                res.status(HTTP_STATUS.NOT_FOUND).json({ success: false, message: MESSAGES.QUIZ_NOT_FOUND });
+                return;
+            }
+            res.status(HTTP_STATUS.OK).json({ success: true, message: 'Question deleted successfully' });
         } catch (error) {
             console.error(error);
             res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ success: false, message: MESSAGES.INTERNAL_ERROR });

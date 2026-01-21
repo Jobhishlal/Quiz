@@ -12,7 +12,7 @@ export interface IQuizDocument extends Document {
 
 const QuizSchema: Schema = new Schema({
     title: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String, required: false },
     duration: { type: String, required: true },
     group: { type: String, required: true },
     image: { type: String, required: false },

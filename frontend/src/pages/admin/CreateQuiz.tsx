@@ -4,6 +4,7 @@ import quizService from '../../services/quizService';
 import { Upload, Plus, Pencil, Trash2 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AddQuestionModal from '../../components/AddQuestionModal';
+import ConfirmationToast from '../../components/ConfirmationToast';
 import toast from 'react-hot-toast';
 
 const CreateQuiz: React.FC = () => {
@@ -60,17 +61,39 @@ const CreateQuiz: React.FC = () => {
         setIsAddQuestionOpen(true);
     };
 
-    const handleDeleteQuestion = (indexToDelete: number) => {
-        if (window.confirm('Are you sure you want to delete this question?')) {
+    const confirmDeleteQuestion = async (indexToDelete: number) => {
+        const questionToDelete = questions[indexToDelete];
+
+        if (isEditMode && id && questionToDelete._id) {
+            try {
+                await quizService.deleteQuestion(id, questionToDelete._id);
+                setQuestions(questions.filter((_, index) => index !== indexToDelete));
+                toast.success('Question deleted from database');
+            } catch (error) {
+                console.error('Failed to delete question', error);
+                toast.error('Failed to delete question');
+            }
+        } else {
             setQuestions(questions.filter((_, index) => index !== indexToDelete));
-            toast.success('Question deleted');
+            toast.success('Question removed');
         }
+    };
+
+    const handleDeleteQuestion = (indexToDelete: number) => {
+        toast.custom((t) => (
+            <ConfirmationToast
+                t={t}
+                message="Are you sure you want to delete this question?"
+                onConfirm={() => confirmDeleteQuestion(indexToDelete)}
+                confirmText="Delete"
+            />
+        ));
     };
 
     const handleSubmit = async () => {
         const quizData: QuizData = {
             title,
-            description,
+            description, // Optional now
             duration,
             group,
             image: image || 'default.png',
@@ -86,9 +109,10 @@ const CreateQuiz: React.FC = () => {
                 toast.success('Quiz created successfully!');
             }
             navigate('/admin/quiz');
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            toast.error(isEditMode ? 'Failed to update quiz' : 'Failed to create quiz');
+            const errorMessage = error.response?.data?.message || (isEditMode ? 'Failed to update quiz' : 'Failed to create quiz');
+            toast.error(errorMessage);
         }
     };
 
@@ -114,7 +138,7 @@ const CreateQuiz: React.FC = () => {
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Alice in Wonderland"
+                            placeholder="Title"
                             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 font-medium outline-none focus:ring-2 focus:ring-[#0088cc]/20 focus:border-[#0088cc]"
                         />
                     </div>
@@ -136,7 +160,7 @@ const CreateQuiz: React.FC = () => {
                     <div>
                         <label className="block text-xs font-bold text-gray-400 uppercase mb-2">Image</label>
                         <div className="flex items-center gap-3 border border-gray-200 rounded-xl px-4 py-3">
-                            <span className="text-gray-900 font-medium flex-1 truncate">{image || 'IMG.362'}</span>
+                            <span className="text-gray-900 font-medium flex-1 truncate">{image || 'File'}</span>
                             <div className="relative cursor-pointer text-[#0088cc] font-bold text-sm hover:underline">
                                 Choose file
                                 <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => setImage(e.target.files?.[0]?.name || '')} />
@@ -156,7 +180,6 @@ const CreateQuiz: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Add Question Button */}
                 <div className="mb-8">
                     <button
                         onClick={() => {

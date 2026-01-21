@@ -6,4 +6,5 @@ export interface IQuizRepository {
     findById(id: string): Promise<Quiz | null>;
     update(id: string, quiz: Partial<Quiz>): Promise<Quiz | null>;
     delete(id: string): Promise<boolean>;
+    deleteQuestion(quizId: string, questionId: string): Promise<boolean>;
 }
