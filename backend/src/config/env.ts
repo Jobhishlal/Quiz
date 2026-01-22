@@ -22,7 +22,7 @@ const config: Config = {
     mongoUri: process.env.MONGO_URI || 'mongodb://localhost:27017/quiz-app',
     admin: {
         email: process.env.ADMIN_EMAIL || 'admin@gmail.com',
-        pass: process.env.ADMIN_PASSWORD || 'admin123',
+        pass: process.env.ADMIN_PASSWORD || '$2b$10$nB1iQMF6PA4UAUp4SQw0fOGtVEtJUvdaDEfjdizat6L3Ch/ZkNJEm',
     },
     jwt: {
         accessSecret: process.env.JWT_ACCESS_SECRET || 'default_access_secret',

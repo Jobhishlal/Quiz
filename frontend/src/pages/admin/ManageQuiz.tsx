@@ -130,7 +130,7 @@ const ManageQuiz: React.FC = () => {
                                 <th className="py-4 px-4 font-semibold text-gray-900 text-sm">S.No</th>
                                 <th className="py-4 px-4 font-semibold text-gray-900 text-sm">Quiz Title</th>
                                 <th className="py-4 px-4 font-semibold text-gray-900 text-sm">Group</th>
-                                <th className="py-4 px-4 font-semibold text-gray-900 text-sm">Status</th>
+                                {/* <th className="py-4 px-4 font-semibold text-gray-900 text-sm">Status</th> */}
                                 <th className="py-4 px-4 font-semibold text-gray-900 text-sm">Quiz Time Duration</th>
                                 <th className="py-4 px-4 font-semibold text-gray-900 text-sm text-right">Actions</th>
                             </tr>
@@ -155,14 +155,14 @@ const ManageQuiz: React.FC = () => {
                                         <td className="py-4 px-4 text-gray-600 text-sm">
                                             {quiz.group}
                                         </td>
-                                        <td className="py-4 px-4 text-sm">
+                                        {/* <td className="py-4 px-4 text-sm">
                                             <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${(quiz.status || 'active') === 'active'
                                                 ? 'bg-green-100 text-green-700'
                                                 : 'bg-gray-100 text-gray-700'
                                                 }`}>
                                                 {(quiz.status || 'active') === 'active' ? 'Active' : 'Draft'}
                                             </span>
-                                        </td>
+                                        </td> */}
                                         <td className="py-4 px-4 text-gray-600 text-sm">
                                             {quiz.duration}
                                         </td>
